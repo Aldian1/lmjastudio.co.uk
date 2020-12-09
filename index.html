@@ -1,0 +1,207 @@
+<html>
+    <head>
+<script>
+$( document ).ready(function() {
+$('#background-music').get(0).play(); 
+$('#background-music').get(0).volume = 0.5;
+  });
+  
+  // Adding event listener to background music
+  let backgroundMusicInterval = setInterval(() => {
+    if (!document.getElementById("background-music")) return;
+    else clearInterval(backgroundMusicInterval);
+    if (localStorage.getItem("bg_music_time")) {
+      document.getElementById(
+        "background-music"
+      ).currentTime = localStorage.getItem("bg_music_time");
+    }
+    document.getElementById("background-music").ontimeupdate = (e) => {
+      localStorage.setItem("bg_music_time", e.currentTarget.currentTime);
+    };
+  }, 50);
+  
+  
+   // Click function for volume button in navbar
+  let volumeButtonClick = setInterval(() => {
+    console.log("intervaling");
+    let volumeButton = document.getElementById("volume-button");
+    if (!volumeButton) return;
+    else {
+      volumeButton.onclick = () => {
+        if (document.getElementById("background-music").paused) {
+          document.getElementById("background-music").play();
+        } else {
+          document.getElementById("background-music").pause();
+        }
+      };
+      clearInterval(volumeButtonClick);
+    }
+  }, 200);
+
+</script>
+
+  <style>
+  .not_played {
+    color: #dfdfdf;
+  }
+  .text_read {
+    color: #202020 !important;
+  }
+</style>
+</head>
+
+
+<body>
+<div class="jumbo-paragraph pointer-cursor" id="Intro-text2">
+  <span class="not_played">We</span> <span class="not_played">are</span>
+  <span class="not_played">young,</span>
+  <span class="not_played">progressive</span>
+  <span class="not_played">North</span> <span class="not_played">Devon</span>
+  <span class="not_played">based</span>
+  <span class="not_played">architecture</span>
+  <span class="not_played">design</span> <span class="not_played">studio</span>
+  <span class="not_played">which</span> <span class="not_played">places</span>
+  <span class="not_played">focus</span> <span class="not_played">on</span>
+  <span class="not_played">formulating</span> <span class="not_played">a</span>
+  <span class="not_played">strong</span>
+  <span class="not_played">underpinning</span>
+  <span class="not_played">concept</span> <span class="not_played">and</span>
+  <span class="not_played">narrative</span> <span class="not_played">to</span>
+  <span class="not_played">arrive</span> <span class="not_played">at</span>
+  <span class="not_played">a</span> <span class="not_played">design</span>
+  <span class="not_played">which</span>
+  <span class="not_played">ultimately</span>
+  <span class="not_played">enhances</span>
+  <span class="not_played">one’s</span>
+  <span class="not_played">environment</span>
+  <span class="not_played">and</span> <span class="not_played">therefore</span>
+  <span class="not_played">one’s</span> <span class="not_played">life’.</span>
+</div>
+<audio id="Intro-player">
+  <source
+    src="https://imaginaryspacedev.co.uk/audio/Intro.wav"
+    type="audio/wav"
+  />
+  Your browser does not support the audio element.
+</audio>
+<script>
+  const playIntroAudio = () => {
+    const text = {
+      id: "Intro",
+      text:
+        "We are young, progressive North Devon based architecture design studio which places focus on formulating a strong underpinning concept and narrative to arrive at a design which ultimately enhances one’s environment and therefore one’s life’.",
+      timestamps: [
+        0.205835,
+        0.252457,
+        0.541509,
+        1.269118,
+        1.731673,
+        1.968192,
+        2.266075,
+        2.484132,
+        3.524018,
+        3.777348,
+        4.057643,
+        4.298976,
+        4.444727,
+        5.253698,
+        5.401948,
+        6.461443,
+        6.585695,
+        6.864824,
+        7.22817,
+        7.682472,
+        8.03545,
+        8.213926,
+        9.005929,
+        9.254394,
+        9.31272,
+        9.526769,
+        9.7611,
+        10.225581,
+        10.460853,
+        11.179084,
+        11.423144,
+        11.80601,
+        12.532896,
+        12.676215,
+        12.978422,
+        13.130307,
+      ],
+    };
+    
+    document.getElementById('video-player').muted = true;
+    
+    // Click on a paragraph to play associated audio
+    const currentPlayer = document.getElementById(`${text.id}-player`);
+    let currentPlayerTimestamps = [...text.timestamps];
+
+    // Check if it is fully played
+    if (currentPlayer.currentTime === currentPlayer.duration) {
+      resetThisTextBox(text.id);
+      currentPlayerTimestamps = [...text.timestamps];
+    }
+    currentPlayer.ontimeupdate = (e) => {
+      // Return background to normal volume when finished reading
+      if (e.currentTarget.currentTime === e.currentTarget.duration) {
+        document.getElementById("background-music").volume = .5;
+        document.getElementById('pause-icon-about').style.opacity = 0;
+      	document.getElementById('play-icon-about').style.opacity = 1;
+        console.log('return');
+      }
+
+      if (
+        currentPlayerTimestamps.length > 0 &&
+        e.currentTarget.currentTime >= currentPlayerTimestamps[0]
+      ) {
+        const unPlayedWord = document.querySelector(
+          `#${text.id}-text2 .not_played`
+        );
+        if (!unPlayedWord) return;
+        unPlayedWord.classList.remove("not_played");
+        unPlayedWord.classList.add("text_read");
+        currentPlayerTimestamps.shift();
+      }
+    };
+
+    const AllPlayers = ["Intro", "Work", "About", "Contact"];
+    // Now play/pause this one
+    if (currentPlayer.paused) {
+      // Pause other players first
+      AllPlayers.forEach((player) => {
+        if (document.getElementById(`${player}-player`))
+          document.getElementById(`${player}-player`).pause();
+      });
+      currentPlayer.play();
+      document.getElementById("background-music").volume = 0.2;
+
+      // Play Pause button in left side
+      document.getElementById('pause-icon-about').style.opacity = 1;
+      document.getElementById('play-icon-about').style.opacity = 0;
+    } else {
+      currentPlayer.pause();
+      document.getElementById("background-music").volume = 1;
+
+      // Play Pause button in left side
+      document.getElementById('pause-icon-about').style.opacity = 0;
+      document.getElementById('play-icon-about').style.opacity = 1;
+    }
+  };
+  
+  const resetThisTextBox = (id) => {
+    document.querySelectorAll(`#${id}-text2 .text_read`).forEach((word) => {
+      word.classList.remove("text_read");
+      word.classList.add("not_played");
+    });
+  };
+
+  document.getElementById("Intro-text2").onclick = playIntroAudio;
+  document.getElementById("about-audio").onclick = playIntroAudio;
+
+
+</script>
+</body>
+
+</html>
+  
+  
