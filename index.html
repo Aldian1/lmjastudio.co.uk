@@ -3,9 +3,11 @@
     <script>
       $(document).ready(function () {
         // $("#background-music").get(0).play();
-        if (localStorage.getItem("backgroundMusicStatus") === "play")
-          $("#background-music").get(0).play();
-        else $("#background-music").get(0).pause();
+        if (localStorage.getItem("backgroundMusicStatus")) {
+          if (localStorage.getItem("backgroundMusicStatus") === "play")
+            $("#background-music").get(0).play();
+          else $("#background-music").get(0).pause();
+        }
         $("#background-music").get(0).volume = 0.5;
       });
 
